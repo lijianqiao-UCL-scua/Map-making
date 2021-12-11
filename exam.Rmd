@@ -4,8 +4,56 @@ author: "Lambridge"
 date: "2021/12/11"
 output: html_document
 ---
+#load the package
+```{r}
+library(sf)
+library(tmap)
+library(tmaptools)
+library(tidyverse)
+```
+#read all the spatial data
+#reproject it
+
 
 ```{r}
-
+OSM <- st_read(here::here("prac5_data",
+                          "gis_osm_pois_a_free_1.shp")) %>%
+  st_transform(., 27700) %>%
+  #select the hotel only
+  filter(fclass == "hotel")
 ```
 
+```{r}
+Worldcities <- st_read(here::here("prac5_data",
+                                  "World_Cities.shp")) %>%
+  st_transform(., 27700)
+```
+
+
+```{r}
+Londonborough <- st_read(
+  here::here(
+    "prac5_data",
+    "statistical-gis-boundaries-london",
+    "ESRI",
+    "London_Borough_Excluding_MHW.shp"
+  )
+) %>%
+  st_transform(., 27700)
+```
+
+
+read in the csv 
+make it into spatial data
+
+```{r}
+Airbnb <- read_csv("prac5_data/listings.csv") %>% 
+  st_as_sf(.,coords = c("longitude","latitude"),
+           crs=4326) %>% 
+  st_transform(.,27700) %>% 
+  #select entire places that are available all year
+  filter(room_type == "Entrie home/apt"&availability_365=="365")
+```
+
+make a function fot the join 
+#
